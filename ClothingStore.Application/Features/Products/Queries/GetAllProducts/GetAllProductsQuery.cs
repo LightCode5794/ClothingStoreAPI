@@ -34,12 +34,9 @@ namespace ClothingStore.Application.Features.Products.Queries.GetAllProducts
         public async Task<Result<List<GetAllProductDto>>> Handle(GetAllProductsQuery query, CancellationToken cancellationToken)
         {
             var products = await _unitOfWork.Repository<Product>().Entities
+                   .Where(p => p.Status != "deleted")
                    .ProjectTo<GetAllProductDto>(_mapper.ConfigurationProvider)
                    .ToListAsync(cancellationToken);
-         
-
-            
-
             return await Result<List<GetAllProductDto>>.SuccessAsync(products);
         }
     }

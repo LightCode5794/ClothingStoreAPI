@@ -16,10 +16,15 @@ namespace ClothingStore.Domain.Entities
 
         //[Column(TypeName = "Money")]
         public required decimal Price { get; set; } = 0;
-        public string Thumnail { get; set; }
+        public string Thumbnail { get; set; }
         public string[]? Images { get; set; }
-        [EnumDataType(typeof(StautusProduct))]
-        public StautusProduct Status { get; set; } = StautusProduct.PENDING;
+        public decimal DiscountPercent { get; set; }
+        public decimal FixedPrice { get; set; } = 0;
+
+        [RegularExpression("pending|published|deleted", ErrorMessage = "Invalid status. Valid values are 'pending' or 'published'.")]
+        public string Status { get; set; } = "pending";
+
+        public ICollection<ImportOrder>? ImportOrders { get; set; }
         public ICollection<FavoriteProduct>? FavoriteUsersLink { get; set; }
         public ICollection<Review>? UserReviews { get; set; }
         public ICollection<ProductDetail> ProductDetails { get; set; }

@@ -10,8 +10,9 @@ namespace ClothingStore.Domain.Common
 
     public enum StautusProduct
     {
-        PUBLISHED,
-        PENDING
+        published,
+        pending,
+        deleted,
     }
     public enum StatusOder
     {

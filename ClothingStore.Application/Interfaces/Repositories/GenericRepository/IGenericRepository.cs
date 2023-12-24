@@ -16,6 +16,7 @@ namespace ClothingStore.Application.Interfaces.Repositories.GenericRepository
         Task<List<T>> GetByIdsAsync(int[] ids);
         Task<List<T>> GetAllAsync();
         Task<T> AddAsync(T entity);
+        Task<IEnumerable<T>> AddAllAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
     }

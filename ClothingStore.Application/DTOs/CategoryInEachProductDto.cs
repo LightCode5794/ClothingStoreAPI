@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClothingStore.Application.Features.Products.Queries.GetAllProducts
+namespace ClothingStore.Application.DTOs
 {
     public class CategoryInEachProductDto
     {

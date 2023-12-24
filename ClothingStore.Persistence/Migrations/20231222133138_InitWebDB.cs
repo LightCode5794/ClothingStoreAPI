@@ -71,8 +71,12 @@ namespace ClothingStore.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<decimal>(type: "Money", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    Thumbnail = table.Column<string>(type: "text", nullable: false),
                     Images = table.Column<string[]>(type: "text[]", nullable: true),
+                    DiscountPercent = table.Column<decimal>(type: "numeric", nullable: false),
+                    FixedPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedBy = table.Column<int>(type: "integer", nullable: true),
@@ -179,7 +183,6 @@ namespace ClothingStore.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Size = table.Column<string>(type: "text", nullable: false),
                     Color = table.Column<string>(type: "text", nullable: false),
                     Image = table.Column<string>(type: "text", nullable: false),
                     ProductId = table.Column<int>(type: "integer", nullable: false),
@@ -253,34 +256,26 @@ namespace ClothingStore.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImportOrder_Detail",
+                name: "SizeOfColor",
                 columns: table => new
                 {
-                    ImportOderId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProductDetailId = table.Column<int>(type: "integer", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    VoucherId = table.Column<int>(type: "integer", nullable: true)
+                    CreatedBy = table.Column<int>(type: "integer", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImportOrder_Detail", x => new { x.ImportOderId, x.ProductDetailId });
+                    table.PrimaryKey("PK_SizeOfColor", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ImportOrder_Detail_ImportOrder_ImportOderId",
-                        column: x => x.ImportOderId,
-                        principalTable: "ImportOrder",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ImportOrder_Detail_ProductDetail_ProductDetailId",
+                        name: "FK_SizeOfColor_ProductDetail_ProductDetailId",
                         column: x => x.ProductDetailId,
                         principalTable: "ProductDetail",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ImportOrder_Detail_Voucher_VoucherId",
-                        column: x => x.VoucherId,
-                        principalTable: "Voucher",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -342,7 +337,7 @@ namespace ClothingStore.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Address = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<int>(type: "integer", nullable: false),
                     VoucherId = table.Column<int>(type: "integer", nullable: true),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
@@ -367,16 +362,52 @@ namespace ClothingStore.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImportOrder_Detail",
+                columns: table => new
+                {
+                    ImportOderId = table.Column<int>(type: "integer", nullable: false),
+                    SizeOfColorId = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    VoucherId = table.Column<int>(type: "integer", nullable: true),
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<int>(type: "integer", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "integer", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImportOrder_Detail", x => new { x.ImportOderId, x.SizeOfColorId });
+                    table.ForeignKey(
+                        name: "FK_ImportOrder_Detail_ImportOrder_ImportOderId",
+                        column: x => x.ImportOderId,
+                        principalTable: "ImportOrder",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ImportOrder_Detail_SizeOfColor_SizeOfColorId",
+                        column: x => x.SizeOfColorId,
+                        principalTable: "SizeOfColor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ImportOrder_Detail_Voucher_VoucherId",
+                        column: x => x.VoucherId,
+                        principalTable: "Voucher",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Cart_Detail",
                 columns: table => new
                 {
                     CartId = table.Column<int>(type: "integer", nullable: false),
-                    ProductDetailId = table.Column<int>(type: "integer", nullable: false),
+                    SizeOfColorId = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cart_Detail", x => new { x.CartId, x.ProductDetailId });
+                    table.PrimaryKey("PK_Cart_Detail", x => new { x.CartId, x.SizeOfColorId });
                     table.ForeignKey(
                         name: "FK_Cart_Detail_Cart_CartId",
                         column: x => x.CartId,
@@ -384,9 +415,9 @@ namespace ClothingStore.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Cart_Detail_ProductDetail_ProductDetailId",
-                        column: x => x.ProductDetailId,
-                        principalTable: "ProductDetail",
+                        name: "FK_Cart_Detail_SizeOfColor_SizeOfColorId",
+                        column: x => x.SizeOfColorId,
+                        principalTable: "SizeOfColor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -396,13 +427,13 @@ namespace ClothingStore.Persistence.Migrations
                 columns: table => new
                 {
                     OderId = table.Column<int>(type: "integer", nullable: false),
-                    ProductDetailId = table.Column<int>(type: "integer", nullable: false),
+                    SizeOfColorId = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     VoucherId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order_Detail", x => new { x.OderId, x.ProductDetailId });
+                    table.PrimaryKey("PK_Order_Detail", x => new { x.OderId, x.SizeOfColorId });
                     table.ForeignKey(
                         name: "FK_Order_Detail_Order_OderId",
                         column: x => x.OderId,
@@ -410,9 +441,9 @@ namespace ClothingStore.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Order_Detail_ProductDetail_ProductDetailId",
-                        column: x => x.ProductDetailId,
-                        principalTable: "ProductDetail",
+                        name: "FK_Order_Detail_SizeOfColor_SizeOfColorId",
+                        column: x => x.SizeOfColorId,
+                        principalTable: "SizeOfColor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -499,9 +530,15 @@ namespace ClothingStore.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cart_Detail_ProductDetailId",
+                name: "IX_Cart_Detail_SizeOfColorId",
                 table: "Cart_Detail",
-                column: "ProductDetailId");
+                column: "SizeOfColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Category_Name",
+                table: "Category",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_FavoriteProduct_ProductId",
@@ -514,9 +551,9 @@ namespace ClothingStore.Persistence.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImportOrder_Detail_ProductDetailId",
+                name: "IX_ImportOrder_Detail_SizeOfColorId",
                 table: "ImportOrder_Detail",
-                column: "ProductDetailId");
+                column: "SizeOfColorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ImportOrder_Detail_VoucherId",
@@ -534,9 +571,9 @@ namespace ClothingStore.Persistence.Migrations
                 column: "VoucherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_Detail_ProductDetailId",
+                name: "IX_Order_Detail_SizeOfColorId",
                 table: "Order_Detail",
-                column: "ProductDetailId");
+                column: "SizeOfColorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_Detail_VoucherId",
@@ -568,6 +605,11 @@ namespace ClothingStore.Persistence.Migrations
                 name: "IX_Review_ProductId",
                 table: "Review",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SizeOfColor_ProductDetailId",
+                table: "SizeOfColor",
+                column: "ProductDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transaction_OrderId",
@@ -620,7 +662,7 @@ namespace ClothingStore.Persistence.Migrations
                 name: "ImportOrder");
 
             migrationBuilder.DropTable(
-                name: "ProductDetail");
+                name: "SizeOfColor");
 
             migrationBuilder.DropTable(
                 name: "Permission");
@@ -635,13 +677,16 @@ namespace ClothingStore.Persistence.Migrations
                 name: "Payment_Method");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "ProductDetail");
 
             migrationBuilder.DropTable(
                 name: "User");
 
             migrationBuilder.DropTable(
                 name: "Voucher");
+
+            migrationBuilder.DropTable(
+                name: "Product");
 
             migrationBuilder.DropTable(
                 name: "Role");

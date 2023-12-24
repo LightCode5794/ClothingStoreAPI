@@ -12,6 +12,7 @@ namespace ClothingStore.Domain.Entities
         public required Product Product { get; set; }
         
         public decimal? TotalAmount { get; set; }
+
         public required ICollection<ImportOrderDetail> ProductsDetailsLink { get; set; }
 
     }

@@ -5,17 +5,24 @@ using ClothingStore.Domain.Entities;
 using MediatR;
 using ClothingStore.Shared;
 using AutoMapper;
+using ClothingStore.Application.Common.Mappings;
+using ClothingStore.Application.DTOs;
+using ClothingStore.Application.Features.Products.Queries.GetAllProducts;
 
 namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
 {
-    public record CreateProductCommand : IRequest<Result<int>>
+    public record CreateProductCommand : IRequest<Result<int>>, IMapFrom<Product>
     {
         public string Name { get; set; }
-        public string Description { get; set; }
+       public string Description { get; set; }
         public decimal Price { get; set; }
-        public int[] CategoryIds { get; set; }
+        public string Thumbnail { get; set; }
+        public decimal DiscountPercent { get; set; }
+        //public decimal FixedPrice { get; set; } = 0;
+        public string Status { get; set; }
+        public int[] Categories { get; set; }
         public string[]? Images { get; set; }
-
+        public List<VariationsDto> Variations { get; set; }
     }
     internal class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<int>>
     {
@@ -29,35 +36,95 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
         }
    
         public async Task<Result<int>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+
         {
-            var linkedCategory = await _unitOfWork.Repository<Category>().GetByIdsAsync(command.CategoryIds);
-           
 
-            var newProduct = new Product()
+            var linkedCategory = await _unitOfWork.Repository<Category>().GetByIdsAsync(command.Categories);
+
+            if (linkedCategory != null && linkedCategory.Count != 0)
             {
-                Name = command.Name,
-                Description = command.Description,
-                Price = command.Price,
-                Images = command.Images,
-                CategoriesLink = new List<ProductCategory>()
-            };
+                var newProduct = new Product()
+                {
+                    Name = command.Name,
+                    Description = command.Description,
+                    Price = (decimal)command.Price,
+                    Images = command.Images,
+                    Thumbnail = command.Thumbnail,
+                    DiscountPercent = command.DiscountPercent,
+                    //FixedPrice = command.FixedPrice,
+                    Status = command.Status,
+                    CategoriesLink = new List<ProductCategory>(),
+                    ProductDetails = new List<ProductDetail>(),
+                    ImportOrders = new List<ImportOrder>(),
 
-            linkedCategory.ForEach(lc => 
-                newProduct.CategoriesLink.Add(
-                    new ProductCategory {
+                };
+
+                linkedCategory.ForEach(lc =>
+                    newProduct.CategoriesLink.Add(
+                        new ProductCategory
+                        {
+                            Product = newProduct,
+                            Category = lc
+                        })
+                );
+
+                var importOder = new ImportOrder()
+                {
+                    Product = newProduct,
+                    ProductsDetailsLink = new List<ImportOrderDetail>(),
+
+                };
+
+                foreach (var pd in command.Variations)
+                {
+                    var newPd = new ProductDetail()
+                    {
+                        Image = pd.Image,
+                        Color = pd.Color,
                         Product = newProduct,
-                        Category = lc
-                    })
-            );
-           
-            // Console.WriteLine(newProduct.CategoriesLink);
+                        Sizes = new List<SizeOfColor>(),
+
+                    };
+
+                    foreach (var item in pd.SizesColor)
+                    {
+
+                        var newSize = new SizeOfColor()
+                        {
+                            Size = item.Size,
+                            Price = item.Price,
+                            ProductDetail = newPd,
+                            ImportOdersLink = new List<ImportOrderDetail>()
+
+                        };
+                        var newImportOderDetail = new ImportOrderDetail()
+                        {
+                            Quantity = (int)item.Quantity,
+                            SizeOfColor = newSize,
+                            ImportOder = importOder,
+
+                        };
+                        newSize.ImportOdersLink.Add(newImportOderDetail);
+                        newPd.Sizes.Add(newSize);
+                        importOder.ProductsDetailsLink.Add(newImportOderDetail);
+                    }
+
+                    newProduct.ProductDetails.Add(newPd);
+
+                }
+
+                newProduct.ImportOrders.Add(importOder);
+
+                await _unitOfWork.Repository<Product>().AddAsync(newProduct);
 
 
-            await _unitOfWork.Repository<Product>().AddAsync(newProduct);
-            newProduct.AddDomainEvent(new ProductCreatedEvent(newProduct));
-            await _unitOfWork.Save(cancellationToken);
+                newProduct.AddDomainEvent(new ProductCreatedEvent(newProduct));
+                await _unitOfWork.Save(cancellationToken);
 
-            return await Result<int>.SuccessAsync(newProduct.Id, "Product Created");
+                return await Result<int>.SuccessAsync(1, "Product Created");
+            }
+            throw new Exception("Categories id not found");
+            // return await Result<int>.SuccessAsync(newProduct.Id, "Product Created");
         }
     }
 }

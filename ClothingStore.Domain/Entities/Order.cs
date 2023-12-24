@@ -13,8 +13,8 @@ namespace ClothingStore.Domain.Entities
     {
         public required string Address { get; set; }
 
-        [EnumDataType(typeof(StatusOder))]
-        public StatusOder Status { get; set; } = StatusOder.PENDING;
+        [RegularExpression("pending|completed|canceled", ErrorMessage = "Invalid status. Valid values are 'pending', completed or'canceled'.")]
+        public string Status { get; set; } = "pending";
         public required User Customer { get; set; } 
         public ICollection<OrderDetail>? ProductsLink { get; set; }
 

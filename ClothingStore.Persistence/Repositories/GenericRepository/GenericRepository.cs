@@ -1,5 +1,6 @@
 ﻿using ClothingStore.Application.Interfaces.Repositories.GenericRepository;
 using ClothingStore.Domain.Common;
+using ClothingStore.Domain.Common.Interfaces;
 using ClothingStore.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,14 @@ namespace ClothingStore.Persistence.Repositories.GenericRepository
         {
             await _dbContext.Set<T>().AddAsync(entity);
             return entity;
+        }
+
+        public async Task<IEnumerable<T>> AddAllAsync(IEnumerable<T> entities)
+        {
+
+            await _dbContext.Set<T>().AddRangeAsync(entities);
+            return entities;
+           
         }
 
         public Task UpdateAsync(T entity)
@@ -53,5 +62,7 @@ namespace ClothingStore.Persistence.Repositories.GenericRepository
                 .Where(entity => ids.Any(id => id == entity.Id))
                 .ToListAsync();
         }
+
+     
     }
 }

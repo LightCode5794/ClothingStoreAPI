@@ -58,15 +58,15 @@ namespace ClothingStore.Persistence.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductDetailId")
+                    b.Property<int>("SizeOfColorId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.HasKey("CartId", "ProductDetailId");
+                    b.HasKey("CartId", "SizeOfColorId");
 
-                    b.HasIndex("ProductDetailId");
+                    b.HasIndex("SizeOfColorId");
 
                     b.ToTable("Cart_Detail");
                 });
@@ -171,18 +171,33 @@ namespace ClothingStore.Persistence.Migrations
                     b.Property<int>("ImportOderId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductDetailId")
+                    b.Property<int>("SizeOfColorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Id")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int?>("VoucherId")
                         .HasColumnType("integer");
 
-                    b.HasKey("ImportOderId", "ProductDetailId");
+                    b.HasKey("ImportOderId", "SizeOfColorId");
 
-                    b.HasIndex("ProductDetailId");
+                    b.HasIndex("SizeOfColorId");
 
                     b.HasIndex("VoucherId");
 
@@ -210,8 +225,9 @@ namespace ClothingStore.Persistence.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -236,7 +252,7 @@ namespace ClothingStore.Persistence.Migrations
                     b.Property<int>("OderId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProductDetailId")
+                    b.Property<int>("SizeOfColorId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
@@ -245,9 +261,9 @@ namespace ClothingStore.Persistence.Migrations
                     b.Property<int?>("VoucherId")
                         .HasColumnType("integer");
 
-                    b.HasKey("OderId", "ProductDetailId");
+                    b.HasKey("OderId", "SizeOfColorId");
 
-                    b.HasIndex("ProductDetailId");
+                    b.HasIndex("SizeOfColorId");
 
                     b.HasIndex("VoucherId");
 
@@ -329,6 +345,12 @@ namespace ClothingStore.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal>("DiscountPercent")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("FixedPrice")
+                        .HasColumnType("numeric");
+
                     b.Property<string[]>("Images")
                         .HasColumnType("text[]");
 
@@ -338,6 +360,14 @@ namespace ClothingStore.Persistence.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Thumbnail")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -404,10 +434,6 @@ namespace ClothingStore.Persistence.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -494,6 +520,43 @@ namespace ClothingStore.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("ClothingStore.Domain.Entities.SizeOfColor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("ProductDetailId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductDetailId");
+
+                    b.ToTable("SizeOfColor");
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.Transaction", b =>
@@ -660,15 +723,15 @@ namespace ClothingStore.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ClothingStore.Domain.Entities.ProductDetail", "ProductDetail")
+                    b.HasOne("ClothingStore.Domain.Entities.SizeOfColor", "SizeOfColor")
                         .WithMany("CartsLink")
-                        .HasForeignKey("ProductDetailId")
+                        .HasForeignKey("SizeOfColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
 
-                    b.Navigation("ProductDetail");
+                    b.Navigation("SizeOfColor");
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.FavoriteProduct", b =>
@@ -693,7 +756,7 @@ namespace ClothingStore.Persistence.Migrations
             modelBuilder.Entity("ClothingStore.Domain.Entities.ImportOrder", b =>
                 {
                     b.HasOne("ClothingStore.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ImportOrders")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -709,9 +772,9 @@ namespace ClothingStore.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ClothingStore.Domain.Entities.ProductDetail", "ProductDetail")
+                    b.HasOne("ClothingStore.Domain.Entities.SizeOfColor", "SizeOfColor")
                         .WithMany("ImportOdersLink")
-                        .HasForeignKey("ProductDetailId")
+                        .HasForeignKey("SizeOfColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -721,7 +784,7 @@ namespace ClothingStore.Persistence.Migrations
 
                     b.Navigation("ImportOder");
 
-                    b.Navigation("ProductDetail");
+                    b.Navigation("SizeOfColor");
 
                     b.Navigation("Voucher");
                 });
@@ -751,9 +814,9 @@ namespace ClothingStore.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ClothingStore.Domain.Entities.ProductDetail", "ProductDetail")
+                    b.HasOne("ClothingStore.Domain.Entities.SizeOfColor", "SizeOfColor")
                         .WithMany("OdersLink")
-                        .HasForeignKey("ProductDetailId")
+                        .HasForeignKey("SizeOfColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -763,7 +826,7 @@ namespace ClothingStore.Persistence.Migrations
 
                     b.Navigation("Oder");
 
-                    b.Navigation("ProductDetail");
+                    b.Navigation("SizeOfColor");
 
                     b.Navigation("Voucher");
                 });
@@ -823,6 +886,17 @@ namespace ClothingStore.Persistence.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ClothingStore.Domain.Entities.SizeOfColor", b =>
+                {
+                    b.HasOne("ClothingStore.Domain.Entities.ProductDetail", "ProductDetail")
+                        .WithMany("Sizes")
+                        .HasForeignKey("ProductDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductDetail");
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.Transaction", b =>
@@ -906,6 +980,8 @@ namespace ClothingStore.Persistence.Migrations
 
                     b.Navigation("FavoriteUsersLink");
 
+                    b.Navigation("ImportOrders");
+
                     b.Navigation("ProductDetails");
 
                     b.Navigation("UserReviews");
@@ -913,16 +989,21 @@ namespace ClothingStore.Persistence.Migrations
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.ProductDetail", b =>
                 {
-                    b.Navigation("CartsLink");
-
-                    b.Navigation("ImportOdersLink");
-
-                    b.Navigation("OdersLink");
+                    b.Navigation("Sizes");
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("ClothingStore.Domain.Entities.SizeOfColor", b =>
+                {
+                    b.Navigation("CartsLink");
+
+                    b.Navigation("ImportOdersLink");
+
+                    b.Navigation("OdersLink");
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.User", b =>

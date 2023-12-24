@@ -24,6 +24,7 @@ namespace ClothingStore.Persistence.Context
         public DbSet<Role> Role => Set<Role>();
         public DbSet<Category> Category => Set<Category>();
         public DbSet<Product> Product => Set<Product>();
+        
         public DbSet<ProductCategory> ProductCategory => Set<ProductCategory>();
         public DbSet<Cart> Cart => Set<Cart>();
         public DbSet<CartDetail> Cart_Detail => Set<CartDetail>();
@@ -52,10 +53,10 @@ namespace ClothingStore.Persistence.Context
 
             // Indirect many-to-many setup for Oder and Food
             modelBuilder.Entity<OrderDetail>()
-            .HasKey(x => new { x.OderId, x.ProductDetailId });
+            .HasKey(x => new { x.OderId, x.SizeOfColorId });
 
             modelBuilder.Entity<CartDetail>()
-            .HasKey(x => new { x.CartId, x.ProductDetailId});
+            .HasKey(x => new { x.CartId, x.SizeOfColorId});
 
             modelBuilder.Entity<ProductCategory>()
             .HasKey(x => new { x.ProductId, x.CategoryId });
@@ -64,7 +65,7 @@ namespace ClothingStore.Persistence.Context
             .HasKey(x => new { x.UserId, x.ProductId });
 
             modelBuilder.Entity<ImportOrderDetail>()
-            .HasKey(x => new { x.ImportOderId, x.ProductDetailId });
+            .HasKey(x => new { x.ImportOderId, x.SizeOfColorId });
 
             
 

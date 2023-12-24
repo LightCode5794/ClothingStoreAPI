@@ -13,7 +13,7 @@ namespace ClothingStore.Domain.Entities
     {
         public string Email { get; set; } = string.Empty;
         public required string FullName { get; set; }
-        public  string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         public required string PhoneNumber { get; set; }
         public string Avatar { get; set; } = string.Empty;
         public required string Address { get; set; } = string.Empty;

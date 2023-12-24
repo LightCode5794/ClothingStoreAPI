@@ -32,15 +32,19 @@ namespace ClothingStore.Application.Features.Categories.Commands.CreateCategory
                 Name = command.Name,
             };
 
-            await _unitOfWork.Repository<Category>().AddAsync(category);
-            category.AddDomainEvent(new CreateCategoryEvent(category));
-            await _unitOfWork.Save(cancellationToken);
+            try
+            {
+                await _unitOfWork.Repository<Category>().AddAsync(category);
+                category.AddDomainEvent(new CreateCategoryEvent(category));
+                await _unitOfWork.Save(cancellationToken);
 
-            Console.WriteLine(category.Id);
-            Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-
-            return await Result<int>.SuccessAsync(category.Id, "Category Created");
+                return Result<int>.Success(category.Id, "Category Created");
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và trả về đối tượng kết quả thất bại
+                return Result<int>.Failure(ex.Message);
+            }
         }
 
     }

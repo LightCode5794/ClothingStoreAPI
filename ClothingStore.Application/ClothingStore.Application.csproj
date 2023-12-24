@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
     <Folder Include="Features\Products\Commands\DeleteFood\" />
     <Folder Include="Features\Products\Commands\UpdateFood\" />
     <Folder Include="Features\Permissions\Commands\" />
