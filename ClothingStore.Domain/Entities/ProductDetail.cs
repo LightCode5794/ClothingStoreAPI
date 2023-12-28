@@ -11,7 +11,7 @@ namespace ClothingStore.Domain.Entities
     public class ProductDetail : BaseAuditableEntity
     {
         public string Color { get; set; } = string.Empty;
-       
+        public decimal Price { get; set; }
         public string Image {  get; set; } = string.Empty;
         public required Product Product { get; set; }
         public  ICollection<SizeOfColor> Sizes { get; set; }

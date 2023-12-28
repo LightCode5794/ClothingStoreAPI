@@ -16,9 +16,6 @@ namespace ClothingStore.Application.Features.Roles.Commands.CreateRole
     public record CreateRoleCommand : IRequest<Result<int>>, IMapFrom<Role>
     {
         public required string Name { get; set; }
-        /*
-        public ICollection<User>? Users { get; set; }
-        public ICollection<Permission>? Permissions { get; set; }*/
 
     }
     internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Result<int>>

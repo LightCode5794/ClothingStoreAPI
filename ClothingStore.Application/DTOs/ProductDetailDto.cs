@@ -15,6 +15,7 @@ namespace ClothingStore.Application.DTOs
         public int Id { get; set; }
         public string Color { get; set; }
         public string Image { get; set; }
+        public decimal Price { get; set; }
         public List<SizeColorDto> SizesColor { get; set; }
 
         public void Mapping(Profile profile)

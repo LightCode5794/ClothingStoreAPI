@@ -41,8 +41,13 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
 
             var linkedCategory = await _unitOfWork.Repository<Category>().GetByIdsAsync(command.Categories);
 
-            if (linkedCategory != null && linkedCategory.Count != 0)
+
+            if(linkedCategory == null)
             {
+                return await Result<int>.FailureAsync("Categories id not found");
+            }
+
+           
                 var newProduct = new Product()
                 {
                     Name = command.Name,
@@ -82,6 +87,7 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
                         Image = pd.Image,
                         Color = pd.Color,
                         Product = newProduct,
+                        Price = pd.Price,
                         Sizes = new List<SizeOfColor>(),
 
                     };
@@ -92,7 +98,6 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
                         var newSize = new SizeOfColor()
                         {
                             Size = item.Size,
-                            Price = item.Price,
                             ProductDetail = newPd,
                             ImportOdersLink = new List<ImportOrderDetail>()
 
@@ -121,9 +126,9 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
                 newProduct.AddDomainEvent(new ProductCreatedEvent(newProduct));
                 await _unitOfWork.Save(cancellationToken);
 
-                return await Result<int>.SuccessAsync(1, "Product Created");
-            }
-            throw new Exception("Categories id not found");
+                return await Result<int>.SuccessAsync(newProduct.Id, "Product Created");
+            
+           
             // return await Result<int>.SuccessAsync(newProduct.Id, "Product Created");
         }
     }

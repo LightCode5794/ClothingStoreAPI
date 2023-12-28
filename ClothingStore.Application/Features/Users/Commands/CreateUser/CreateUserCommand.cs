@@ -10,15 +10,19 @@ using ClothingStore.Application.Common.Mappings;
 using MediatR;
 using ClothingStore.Shared;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using ClothingStore.Application.Common.Exceptions;
 
 namespace ClothingStore.Application.Features.Users.Commands.CreateUser
 {
     public record CreateUserCommand : IRequest<Result<int>>, IMapFrom<User>
     {
-        public required string Name { get; set; }
+        public required string FullName { get; set; }
         public required string Password { get; set; }
-        public required string Phone_number { get; set; }
-        public required string Address { get; set; } = string.Empty;
+        public required string PhoneNumber { get; set; }
+        public required string Email { get; set; }
+        public required string Gender { get; set; }
+        public required int RoleId {  get; set; } 
 
     }
     internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<int>>
@@ -34,14 +38,21 @@ namespace ClothingStore.Application.Features.Users.Commands.CreateUser
         public async Task<Result<int>> Handle(CreateUserCommand command, CancellationToken cancellationToken)
         {
             
-            
+            var role = _unitOfWork.Repository<Role>().Entities.FirstOrDefault(s => s.Id == command.RoleId) ?? throw new BadRequestException();
+
+
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(command.Password);
+
+
             var user = new User()
             {
-                FullName = "Tran Trong Hoang",
-                Password = command.Password,
-                PhoneNumber = command.Phone_number,
-                Address = command.Address,
-                Role = new Role() { Name = "ADMIN"}
+                FullName = command.FullName,
+                Password = passwordHash,
+                PhoneNumber = command.PhoneNumber,
+                Email = command.Email,
+                Role = role,
+                Gender = command.Gender,
+               
             };
 
             await _unitOfWork.Repository<User>().AddAsync(user);
@@ -49,7 +60,7 @@ namespace ClothingStore.Application.Features.Users.Commands.CreateUser
 
             await _unitOfWork.Save(cancellationToken);
 
-            return  await Result<int>.SuccessAsync(user.Id, "Player Created.");
+            return await Result<int>.SuccessAsync(user.Id, "User Created.");
         }
 
     }

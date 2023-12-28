@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace ClothingStore.Application.DTOs
 {
-    public class VariationsDto 
+    public class VariationsDto
     {
         public string Color { get; set; }
         public string Image { get; set; }
+        public decimal Price { get; set; }
         public List<SizeOfColorDto> SizesColor { get; set; }
-        
-
+       
 
 
     }

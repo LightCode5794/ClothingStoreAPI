@@ -6,22 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClothingStore.Application.Features.Users.Queries.GetAllUsers
+namespace ClothingStore.Application.Features.Users.Commands.LoginUser
 {
-    public class UserDto : IMapFrom<User>
+    public class UserLoginDto : IMapFrom<User>
     {
         public string? Email { get; set; }
-
-        public required string Name { get; set; }
-
-        public required string PhoneNumber { get; set; }
-
+        public  string PhoneNumber { get; set; }
+        public string Password { get; set; }
         public string? Avatar { get; set; }
-
-        //public required Role Role { get; set; }
+        public  int RoleId { get; set; }
 
        // public ICollection<Food>? FavoriteFoods { get; set; }
 
-        public ICollection<Review>? FoodReviews { get; set; }
+     
     }
 }

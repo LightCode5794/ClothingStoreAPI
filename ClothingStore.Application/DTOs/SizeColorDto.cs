@@ -12,7 +12,7 @@ namespace ClothingStore.Application.DTOs
     public class SizeColorDto : IMapFrom<SizeOfColor>
     {
         public int Id { get; set; }
-        public decimal Price { get; set; }     
+     
         public string Size { get; set; }
         public int Inventory { get; set; }
         public void Mapping(Profile profile)
