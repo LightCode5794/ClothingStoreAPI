@@ -225,9 +225,27 @@ namespace ClothingStore.Persistence.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
@@ -241,6 +259,8 @@ namespace ClothingStore.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("PaymentMethodId");
 
                     b.HasIndex("VoucherId");
 
@@ -590,8 +610,7 @@ namespace ClothingStore.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("PaymentMethodId");
 
@@ -797,11 +816,19 @@ namespace ClothingStore.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ClothingStore.Domain.Entities.PaymentMethod", "PaymentMethod")
+                        .WithMany("Order")
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ClothingStore.Domain.Entities.Voucher", "Voucher")
                         .WithMany("OdersUsed")
                         .HasForeignKey("VoucherId");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("PaymentMethod");
 
                     b.Navigation("Voucher");
                 });
@@ -902,13 +929,13 @@ namespace ClothingStore.Persistence.Migrations
             modelBuilder.Entity("ClothingStore.Domain.Entities.Transaction", b =>
                 {
                     b.HasOne("ClothingStore.Domain.Entities.Order", "Order")
-                        .WithOne("Transaction")
-                        .HasForeignKey("ClothingStore.Domain.Entities.Transaction", "OrderId")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ClothingStore.Domain.Entities.PaymentMethod", "PaymentMethod")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -964,14 +991,11 @@ namespace ClothingStore.Persistence.Migrations
                     b.Navigation("ProductsLink");
 
                     b.Navigation("Review");
-
-                    b.Navigation("Transaction")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.PaymentMethod", b =>
                 {
-                    b.Navigation("Transactions");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ClothingStore.Domain.Entities.Product", b =>

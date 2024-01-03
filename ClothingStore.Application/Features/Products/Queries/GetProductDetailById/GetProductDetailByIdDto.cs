@@ -26,6 +26,7 @@ namespace ClothingStore.Application.Features.Products.Queries.GetProductDetailBy
             public string[]? Images { get; set; }
             public List<CategoryInEachProductDto> Categories { get; set; }
             public List<ProductDetailDto> Variations { get; set; }
+         
 
         public void Mapping(Profile profile)
         {

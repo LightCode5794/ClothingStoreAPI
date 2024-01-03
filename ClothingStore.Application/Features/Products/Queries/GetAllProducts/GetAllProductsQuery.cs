@@ -5,20 +5,11 @@ using ClothingStore.Domain.Entities;
 using ClothingStore.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ClothingStore.Application.Features.Products.Queries.GetAllProducts
 {
-    public record GetAllProductsQuery : IRequest<Result<List<GetAllProductDto>>> { 
-    
-    
-    
-    };
+    public record GetAllProductsQuery : IRequest<Result<List<GetAllProductDto>>> {};
 
     internal class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<List<GetAllProductDto>>>
     {

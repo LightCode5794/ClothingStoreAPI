@@ -11,6 +11,7 @@ namespace ClothingStore.Domain.Entities
     {
         public int ImportOderId { get; set; }
         public int SizeOfColorId { get; set; }
+        //public int UnitPrice { get; set; }
         public required SizeOfColor SizeOfColor { get; set; }
         public required ImportOrder ImportOder { get; set; }
         public required int Quantity { get; set; }

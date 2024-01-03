@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using ClothingStore.Application.Common.Mappings;
-using ClothingStore.Application.Features.Products.Queries.GetProductDetailById;
 using ClothingStore.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ClothingStore.Application.DTOs
+
+namespace ClothingStore.Application.Features.Products.Queries.GetProductDetailById
 {
     public class ProductDetailDto : IMapFrom<ProductDetail>
     {
@@ -21,7 +16,7 @@ namespace ClothingStore.Application.DTOs
         public void Mapping(Profile profile)
         {
             profile.CreateMap<ProductDetail, ProductDetailDto>()
-                .ForMember(dto => dto.SizesColor, opt => opt.MapFrom(p => p.Sizes.Select(s => s)));                       
+                .ForMember(dto => dto.SizesColor, opt => opt.MapFrom(p => p.Sizes.Select(s => s)));
             profile.CreateMap<SizeOfColor, SizeColorDto>();
 
         }

@@ -36,7 +36,8 @@ namespace ClothingStore.Persistence.Context
         public DbSet<Transaction> Transaction => Set<Transaction>();
         public DbSet<Voucher> Voucher => Set<Voucher>();
         public DbSet<Review> Review => Set<Review>();
-        
+        public DbSet<FavoriteProduct> FavoriteProduct => Set<FavoriteProduct>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -70,11 +71,11 @@ namespace ClothingStore.Persistence.Context
             
 
             // one to one 
-            modelBuilder.Entity<Order>()
+            /*modelBuilder.Entity<Order>()
             .HasOne(o => o.Transaction)
             .WithOne(t => t.Order)
             .HasForeignKey<Transaction>(t => t.OrderId)
-            .IsRequired();
+            .IsRequired();*/
 
             modelBuilder.Entity<Order>()
             .HasOne(o => o.Review)

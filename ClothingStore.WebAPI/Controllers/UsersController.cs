@@ -7,6 +7,7 @@ using ClothingStore.Application.Features.Users.Commands.LoginUser;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ClothingStore.Application.Features.Users.Queries.GetFavouriteProduct;
 
 namespace ClothingStore.WebAPI.Controllers
 {
@@ -77,7 +78,15 @@ namespace ClothingStore.WebAPI.Controllers
             return await _mediator.Send(command);
         }
 
-        
+        [HttpGet]
+        [Route("{id}/favourites")]
+        public async Task<ActionResult<Result<List<GetFavouriteProductsDto>>>> GetFavourites(int id)
+        {
+            return await _mediator.Send(new GetFavouriteProductsQuery(id));
+        }
+
+
+
 
         /* [HttpPut("{id}")]
          public async Task<ActionResult<Result<int>>> Update(int id, UpdateUserCommand command)

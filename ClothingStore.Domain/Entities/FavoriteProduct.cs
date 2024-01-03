@@ -10,8 +10,8 @@ namespace ClothingStore.Domain.Entities
 {
     public class FavoriteProduct : BaseAuditableEntity
     {
-        public required int UserId { get; set; }
-        public required int ProductId { get; set; }
+        public  int UserId { get; set; }
+        public  int ProductId { get; set; }
         public required User User { get; set; }
         public required Product Product { get; set; }
     }

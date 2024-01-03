@@ -10,6 +10,7 @@ namespace ClothingStore.Domain.Entities
     public class PaymentMethod : BaseAuditableEntity
     {
         public required string Name {  get; set; }
-        public ICollection<Transaction>? Transactions { get; set; }
+        //public ICollection<Transaction>? Transactions { get; set; }
+        public ICollection<Order> Order { get; set; }
     }
 }

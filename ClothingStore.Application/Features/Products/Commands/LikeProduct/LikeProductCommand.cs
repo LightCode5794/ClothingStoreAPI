@@ -5,14 +5,16 @@ using MediatR;
 using ClothingStore.Shared;
 using AutoMapper;
 using ClothingStore.Application.Common.Mappings;
-
+using Microsoft.EntityFrameworkCore;
+using AutoMapper.QueryableExtensions;
+using ClothingStore.Application.Features.Products.Queries.GetAllProducts;
 
 namespace ClothingStore.Application.Features.Products.Commands.LikeProduct
 {
-    public record LikeProductCommand : IRequest<Result<int>>, IMapFrom<Product>
+    public record LikeProductCommand : IRequest<Result<int>>
     {
-        public int ProductId { get; set; }
-        public int UserId { get; set; }
+        public required int ProductId { get; set; }
+        public required int UserId { get; set; }
      
     }
     internal class LikeProductCommandHandler : IRequestHandler<LikeProductCommand, Result<int>>
@@ -28,8 +30,38 @@ namespace ClothingStore.Application.Features.Products.Commands.LikeProduct
    
         public async Task<Result<int>> Handle(LikeProductCommand command, CancellationToken cancellationToken)
 
-        {        
-             return await Result<int>.SuccessAsync("liked");
+        {
+            var user = await _unitOfWork.Repository<User>().GetByIdAsync(command.UserId);
+            if (user == null)
+            {
+                return Result<int>.Failure("User not found");
+            }
+
+            var product = await _unitOfWork.Repository<Product>().Entities
+                .Include(p => p.FavoriteUsersLink)
+                .Where(p => p.Id == command.ProductId)
+                .FirstAsync(cancellationToken: cancellationToken);
+                    
+           
+            if (product == null)
+            {
+                return Result<int>.Failure("Product not found");
+            }
+
+            
+            //product.FavoriteUsersLink ??= new List<FavoriteProduct>();
+
+           
+            product.FavoriteUsersLink.Add(new FavoriteProduct
+            {
+                User = user,
+                Product = product,
+            });
+            await _unitOfWork.Repository<Product>().UpdateAsync(product);
+            product.AddDomainEvent(new ProductLikedEvent(product));
+            await _unitOfWork.Save(cancellationToken);
+
+            return await Result<int>.SuccessAsync($"user {user.Id} liked product {product.Id}");
         }
     }
 }

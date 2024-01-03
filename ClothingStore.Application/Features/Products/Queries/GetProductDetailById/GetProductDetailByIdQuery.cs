@@ -43,24 +43,6 @@ namespace ClothingStore.Application.Features.Products.Queries.GetProductDetailBy
         public async Task<Result<GetProductDetailByIdDto>> Handle(GetProductDetailByIdQuery request, CancellationToken cancellationToken)
         {
 
-
-            /* var product = await _unitOfWork.Repository<Product>().Entities           
-             .Where(p => p.Status != "deleted" && p.Id == request.Id)
-             .Include(p => p.ProductDetails)
-                 .ThenInclude(pd => pd.Sizes)
-                     .ThenInclude(s => s.ImportOdersLink)
-             .Include(p => p.ProductDetails)
-                  .ThenInclude(pd => pd.Sizes)
-                     .ThenInclude(s => s.OdersLink)                        
-             //.ProjectTo<GetProductDetailByIdDto>(_mapper.ConfigurationProvider)
-             .FirstOrDefaultAsync(cancellationToken);
-             Console.WriteLine(product);*/
-
-
-            // product.Variations = new List<VariationsDto>();
-
-
-
             var product = await _unitOfWork.Repository<Product>().Entities
                     .Where(p => p.Status != "deleted" && p.Id == request.Id)
                     .ProjectTo<GetProductDetailByIdDto>(_mapper.ConfigurationProvider)

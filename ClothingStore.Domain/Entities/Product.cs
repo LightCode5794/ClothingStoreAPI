@@ -24,9 +24,9 @@ namespace ClothingStore.Domain.Entities
         [RegularExpression("pending|published|deleted", ErrorMessage = "Invalid status. Valid values are 'pending' or 'published'.")]
         public string Status { get; set; } = "pending";
 
-        public ICollection<ImportOrder>? ImportOrders { get; set; }
-        public ICollection<FavoriteProduct>? FavoriteUsersLink { get; set; }
-        public ICollection<Review>? UserReviews { get; set; }
+        public ICollection<ImportOrder> ImportOrders { get; set; }
+        public ICollection<FavoriteProduct> FavoriteUsersLink { get; set; }
+        public ICollection<Review> UserReviews { get; set; }
         public ICollection<ProductDetail> ProductDetails { get; set; }
         public ICollection<ProductCategory> CategoriesLink { get; set; }
     }

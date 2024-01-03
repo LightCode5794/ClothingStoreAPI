@@ -37,7 +37,8 @@ namespace ClothingStore.Persistence.Extentions
         {
             services
                 .AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork))
-                .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+                .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>))
+                .AddTransient<IOrderRepository, OrderRepository>();
             //.AddTransient<IPlayerRepository, PlayerRepository>()
             //.AddTransient<IClubRepository, ClubRepository>()
             //.AddTransient<IStadiumRepository, StadiumRepository>()

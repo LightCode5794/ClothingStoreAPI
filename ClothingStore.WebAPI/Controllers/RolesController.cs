@@ -25,6 +25,7 @@ namespace ClothingStore.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<Result<List<RoleDto>>>> Get()
         {
+          
             return await _mediator.Send(new GetAllRolesQuery());
         }
     }

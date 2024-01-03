@@ -6,7 +6,6 @@ using MediatR;
 using ClothingStore.Shared;
 using AutoMapper;
 using ClothingStore.Application.Common.Mappings;
-using ClothingStore.Application.DTOs;
 using ClothingStore.Application.Features.Products.Queries.GetAllProducts;
 
 namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
@@ -77,6 +76,7 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
                 {
                     Product = newProduct,
                     ProductsDetailsLink = new List<ImportOrderDetail>(),
+                    TotalAmount = 0
 
                 };
 
@@ -87,7 +87,7 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
                         Image = pd.Image,
                         Color = pd.Color,
                         Product = newProduct,
-                        Price = pd.Price,
+                        Price = pd.Price ,
                         Sizes = new List<SizeOfColor>(),
 
                     };
@@ -109,6 +109,7 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
                             ImportOder = importOder,
 
                         };
+                        importOder.TotalAmount += newProduct.Price * newImportOderDetail.Quantity;
                         newSize.ImportOdersLink.Add(newImportOderDetail);
                         newPd.Sizes.Add(newSize);
                         importOder.ProductsDetailsLink.Add(newImportOderDetail);
