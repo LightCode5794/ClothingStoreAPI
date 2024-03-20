@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPayment
 {
-   
+
     public record ValidateOrderPaymentCommand : IRequest<Result<bool>>
     {
         [Required]
@@ -32,7 +32,7 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
         [Required]
         public string vnp_ResponseCode { get; set; }
         [Required]
-        public string vnp_TmnCode  { get; set; }
+        public string vnp_TmnCode { get; set; }
         [Required]
         public int vnp_TransactionNo { get; set; }
         [Required]
@@ -43,7 +43,7 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
         public string vnp_SecureHash { get; set; }
 
     }
-    
+
     internal class ValidateOrderPaymentCommandHandler : IRequestHandler<ValidateOrderPaymentCommand, Result<bool>>
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -56,7 +56,7 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
         }
         public async Task<Result<bool>> Handle(ValidateOrderPaymentCommand command, CancellationToken cancellationToken)
         {
-           
+
 
             VnPayLibrary vnPay = new();
 
@@ -81,7 +81,7 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
 
             string hashSecret = "PWAICGXRXXIBIKXHNKFKLBVIVAUHZPAU";
             bool isValidSignature = vnPay.ValidateSignature(command.vnp_SecureHash, hashSecret);
-                
+
             if (isValidSignature)
             {
                 var order = await _unitOfWork.Repository<Order>().GetByIdAsync(command.vnp_TxnRef);
@@ -95,7 +95,7 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
                     return Result<bool>.Failure("Invalid amount");
                 }
 
-                if(order.Status != "pending")
+                if (order.Status != "pending")
                 {
 
                     return Result<bool>.Failure("Order already confirmed");
@@ -104,21 +104,21 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
                 if (vnp_ResponseCode == "00" && vnp_TransactionStatus == "00")
                 {
                     //Thanh toan thanh cong
-                        order.Status = "completed";
-                      
+                    order.Status = "completed";
+
                 }
                 else
                 {
                     //Thanh toan khong thanh cong. Ma loi: vnp_ResponseCode
                     //  displayMsg.InnerText = "Có lỗi xảy ra trong quá trình xử lý.Mã lỗi: " + vnp_ResponseCode;
-                   
+
                     order.Status = "canceled";
 
                     await _unitOfWork.Repository<Order>().UpdateAsync(order);
                     await _unitOfWork.Save(cancellationToken);
-                    return  await Result<bool>.FailureAsync(false, $"Thanh toan  loi {order.Status}, OrderId={orderId}, VNPAY TranId={vnpayTranId}, ResponseCode={vnp_ResponseCode}");
+                    return await Result<bool>.FailureAsync(false, $"Thanh toan  loi {order.Status}, OrderId={orderId}, VNPAY TranId={vnpayTranId}, ResponseCode={vnp_ResponseCode}");
 
-                    
+
                 }
                 await _unitOfWork.Repository<Order>().UpdateAsync(order);
                 await _unitOfWork.Save(cancellationToken);
@@ -127,12 +127,12 @@ namespace ClothingStore.Application.Features.Orders.Commands.ValidateOrderPaymen
             }
             else
             {
-             
+
                 return Result<bool>.Success(false, "Invalid signature");
             }
 
         }
 
-       
+
     }
 }

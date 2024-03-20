@@ -1,12 +1,16 @@
 ﻿using ClothingStore.Application.Features.Categories.Commands.CreateCategory;
+using ClothingStore.Application.Features.Categories.Commands.UpdateCategory;
 using ClothingStore.Application.Features.Orders.Commands.CreateOrder;
 using ClothingStore.Application.Features.Orders.Commands.PayOrder;
+using ClothingStore.Application.Features.Orders.Commands.UpdateStatusOrder;
 using ClothingStore.Application.Features.Orders.Commands.ValidateOrderPayment;
 using ClothingStore.Application.Features.Orders.Queries.GetAllOrders;
+using ClothingStore.Application.Features.Orders.Queries.GetOrderById;
 using ClothingStore.Application.Features.Orders.Queries.GetOrderByUser;
 using ClothingStore.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClothingStore.WebAPI.Controllers
 {
@@ -23,7 +27,7 @@ namespace ClothingStore.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Result<int>>> Create(CreateOrderCommand command)
         {
-           
+
             return await _mediator.Send(command);
         }
 
@@ -31,7 +35,7 @@ namespace ClothingStore.WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<Result<List<GetAllOrdersDto>>>> GetAll()
         {
-         
+
             return await _mediator.Send(new GetAllOrdersQuery());
         }
 
@@ -57,5 +61,26 @@ namespace ClothingStore.WebAPI.Controllers
 
             return await _mediator.Send(new GetOrderByUserQuery(userId));
         }
+
+        [HttpPut]
+        [Route("{id}/status")]
+        public async Task<ActionResult<Result<int>>> UpdateStatusOrder(int id, UpdateStatusOrderCommand command)
+        {
+
+            return await _mediator.Send(new UpdateStatusOrderCommand { OrderId = id, Status = command.Status});
+        }
+
+   
+
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<Result<GetOrderByIdDto>>> GetOdersById(int id)
+        {
+
+            return await _mediator.Send(new GetOrderByIdQuery(id));
+        }
+
+
     }
 }

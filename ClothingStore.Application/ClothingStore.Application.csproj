@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Products\Commands\UpdateProduct\" />
+    <Folder Include="Features\Categories\Commands\UpdateCategory\NewFolder\" />
+    <Folder Include="Features\ImportOrders\Query\GetAllImportOrders\" />
     <Folder Include="Features\Permissions\Commands\" />
     <Folder Include="Features\Permissions\Queries\" />
     <Folder Include="Features\Orders\Commands\CancelOder\" />

@@ -97,7 +97,7 @@ namespace ClothingStore.Application.Features.Products.Commands.CreateProduct
 
                         var newSize = new SizeOfColor()
                         {
-                            Size = item.Size,
+                            Size = item.Size.ToUpper(),
                             ProductDetail = newPd,
                             ImportOdersLink = new List<ImportOrderDetail>()
 

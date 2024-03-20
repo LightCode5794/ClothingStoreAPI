@@ -36,7 +36,7 @@ namespace ClothingStore.Application.Features.Orders.Queries.GetAllOrders
                 .ProjectTo<GetAllOrdersDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
-  
+
 
             return await Result<List<GetAllOrdersDto>>.SuccessAsync(orders);
         }
